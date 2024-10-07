@@ -1,8 +1,9 @@
-import express, { response } from 'express';
+import express, { application, response } from 'express';
 import path from 'path';
 import crypto from 'crypto';
 import request  from 'request';
 import querystring from 'querystring';
+import cookieParser from 'cookie-parser';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,6 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 const port = 8888;
 const client_id = process.env.CLIENT_ID;
@@ -55,6 +57,7 @@ app.get('/callback', async (req, res)=>{
         error: 'state_mismatch'
       }));
   } else {
+    res.clearCookie(stateKey);
     var authOptions = {
       url: 'https://accounts.spotify.com/api/token',
       form: {
@@ -75,12 +78,11 @@ app.get('/callback', async (req, res)=>{
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
 
-        res.redirect('/' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token,
-            code: code,
-          }));
+        res.cookie('access_token', access_token);
+        res.cookie('refresh_token', refresh_token);
+
+        res.redirect('/home');
+
       } else {
         res.redirect('/#' +
           querystring.stringify({
@@ -89,14 +91,11 @@ app.get('/callback', async (req, res)=>{
       }
     });
   }
-  //res.send(req.query);
 });
 
-app.get('/:token', async (req, res)=>{
+app.get('/home', async (req, res)=>{
 
-  const params = querystring.decode(req.params.token);
-  
-  const access_token = params.access_token;
+  const access_token = req.cookies.access_token;
     
   var options = {
     headers: { 'Authorization': 'Bearer ' + access_token },
@@ -108,15 +107,36 @@ app.get('/:token', async (req, res)=>{
   const data = await response.json();
 
   const total = data.total;
-  const offset = Math.ceil(Math.random() * (total - 50));
+  
 
-  console.log(offset)
+  res.cookie('total_album', total);
 
-  res.send('tudo certo')
+  res.sendFile(path.join(__dirname+'/home.html'));
 
-  // usar cookies
-  //Criar rota para retornar album aleatório
+});
 
+
+app.get('/getalbum', async (req, res) =>{
+
+  const access_token = req.cookies.access_token;
+  const total = req.cookies.total_album;
+
+  
+
+  const offset = Math.ceil(Math.random() * (total));
+
+  const options = {
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  };
+
+  const response = await fetch(`https://api.spotify.com/v1/me/albums?offset=${offset}&limit=1`, options);
+
+  const data = await response.json();
+
+  const album = data.items[0].album
+
+  res.status(200).json({"name": album.name, "artists": album.artists, "images": album.images[0].url});
 });
 
 
@@ -125,5 +145,5 @@ app.get('/', (req, res)=>{
 });
 
 app.listen(port, (req, res)=>{
-    console.log('Ta funcionando meu chefe');
+    console.log(`Servidor rodando na porta ${port}`);
 });
