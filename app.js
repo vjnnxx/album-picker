@@ -1,4 +1,4 @@
-import express, { application, response } from 'express';
+import express  from 'express';
 import path from 'path';
 import crypto from 'crypto';
 import request  from 'request';
@@ -13,6 +13,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(express.static(__dirname + '/dist'));
 
 const port = 8888;
 const client_id = process.env.CLIENT_ID;
@@ -111,7 +113,11 @@ app.get('/home', async (req, res)=>{
 
   res.cookie('total_album', total);
 
-  res.sendFile(path.join(__dirname+'/home.html'));
+  // res.sendFile(path.join(__dirname+'/home.html'));
+  res.redirect(`/?token=${access_token}`);
+
+  // Servir página html pra logar e mudar a main do react para exibir albums e etc
+  //Animação mostrando vários albums etc
 
 });
 
@@ -141,7 +147,14 @@ app.get('/getalbum', async (req, res) =>{
 
 
 app.get('/', (req, res)=>{
-    res.sendFile(path.join(__dirname+'/index.html'));
+    // const token = req.params.token || null;
+
+    // if (token) {
+      
+    // } else {
+    //   console.log('deu bo')
+    // }
+    res.sendFile(path.join(__dirname+'/dist/index.html'));
 });
 
 app.listen(port, (req, res)=>{
