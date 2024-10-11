@@ -113,7 +113,6 @@ app.get('/home', async (req, res)=>{
 
   res.cookie('total_album', total);
 
-  // res.sendFile(path.join(__dirname+'/home.html'));
   res.redirect(`/?token=${access_token}`);
 
   // Servir página html pra logar e mudar a main do react para exibir albums e etc
@@ -136,13 +135,14 @@ app.get('/getalbum', async (req, res) =>{
     json: true
   };
 
-  const response = await fetch(`https://api.spotify.com/v1/me/albums?offset=${offset}&limit=1`, options);
+  //Colocar try catch aqui
+  const response = await fetch(`https://api.spotify.com/v1/me/albums?offset=${offset}&limit=1`, options); 
 
   const data = await response.json();
 
-  const album = data.items[0].album
+  const album = data.items[0].album;
 
-  res.status(200).json({"name": album.name, "artists": album.artists, "images": album.images[0].url});
+  res.status(200).json({"name": album.name, "artists": album.artists, "image": album.images[0].url, "external_url": album.external_urls});
 });
 
 
