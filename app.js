@@ -103,16 +103,20 @@ app.get('/home', async (req, res)=>{
     json: true
   };
 
-  const response = await fetch('https://api.spotify.com/v1/me/albums?limit=1', options);
+  try{
+    const response = await fetch('https://api.spotify.com/v1/me/albums?limit=1', options);
 
-  const data = await response.json();
-
-  const total = data.total;
+    const data = await response.json();
   
+    const total = data.total;
 
-  res.cookie('total_album', total);
+    res.cookie('total_album', total);
 
-  res.redirect(`/?token=${access_token}`);
+    res.redirect(`/?token=${access_token}`);
+
+  } catch (error) {
+    res.send(JSON.parse(JSON.stringify(error)));
+  }
 
 });
 
