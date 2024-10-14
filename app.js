@@ -116,6 +116,7 @@ app.get('/home', async (req, res)=>{
 
   } catch (error) {
     res.send(JSON.parse(JSON.stringify(error)));
+    console.log('Deu ruim')
   }
 
 });
