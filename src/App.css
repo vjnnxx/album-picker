@@ -1,0 +1,65 @@
+a {
+    text-decoration: underline;
+    color: white;
+}
+
+.main, .content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main{
+    height: 60vh;
+    flex-direction: column;
+}
+
+.login, .sort{
+    background-color: #3d3d3d;
+    color: #fff;
+    outline: .5px solid black;
+    border: none;
+}
+
+.login{
+    font-size: 28px;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.sort{
+    font-size: 20px;
+    margin: 12px;
+    padding: 4px;
+    border-radius: 4px;
+    margin: 10px;
+}
+
+.content{
+    flex-direction: column;
+}
+
+
+@keyframes rotate {
+    from{
+      transform: rotate(0deg);
+    } to {
+      transform: rotate(360deg);
+    }
+  }
+  
+.spinner{
+    width: 30px;
+    height: 30px;
+    padding: 10px;
+    background: #fff;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    mask: 
+      conic-gradient(#0000,#000) subtract,
+      linear-gradient(#000 0 0) content-box;
+    box-sizing: border-box;
+  
+    animation: rotate 0.75s ease-in-out infinite;
+}
+

@@ -1,4 +1,8 @@
 :root {
-  background-color: #242424;
+  background-color: #20b454;
   color: #fff;
+}
+
+* {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }

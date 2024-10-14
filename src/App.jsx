@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-
 import Card from "./Card/Card";
+import './App.css';
 
 function App(){
 
   const [token, setToken] = useState('');
-
   const [name, setName] = useState('');
-
   const [album, setAlbum] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const getToken = () =>{
     let params = new URLSearchParams(window.location.search);
@@ -26,16 +25,26 @@ function App(){
     const response = await fetch('https://api.spotify.com/v1/me/', options);
     const data = await response.json();
 
-    setName(data.display_name);
+    setName('Olá ' + data.display_name + '!');
   }
 
   const fetchAlbum = async () =>{
 
-    const response = await fetch('/getalbum');
-    const data = await response.json();
-    setAlbum(data);
+    setLoading(true);
 
-    console.log(data)
+    // const response = await fetch('/getalbum');
+    // const data = await response.json();
+    // setAlbum(data);
+
+    fetch('/getalbum')
+    .then(response => response.json())
+    .then(data => {
+      setAlbum(data)
+      setTimeout(()=>null,5000)
+    }
+    )
+    .finally(setLoading(false));
+    
   }
 
   useEffect(()=>{
@@ -45,27 +54,34 @@ function App(){
   
 
   return (
-    <>
-      {token ? (
-        <div>
-          <h2> Olá, {name}! </h2>
-          <button onClick={fetchAlbum}>Escolher</button>
+    <div className='main'>
+      {token? (
+        <div className="content">
+          <h1> {name} </h1>
 
-          {album ? (
-            <div>
-              <Card album={album}/>
-            </div>
-            
-          ): (
-            <></>
+          <p>Não sabe o que ouvir? Clique em escolher e descubra!</p>
+
+          {loading === true ? (
+            <div className="spinner"></div>
+          ) : (
+
+            album? (
+              <>
+              <div className="album-content">
+                <Card album={album}/>
+              </div>
+              </>
+            ): (
+              <></>
+            )
           )}
-          
-
+          <button onClick={fetchAlbum} className="sort">Escolher</button>
         </div>
       ) : (
-        <a href="/login">Entrar com spotify</a>
+        <a href="/login"> <button className="login">Entrar com spotify</button> </a>
       )}
-    </>
+      
+    </div>
   )
 }
 

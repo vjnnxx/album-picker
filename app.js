@@ -36,7 +36,6 @@ app.get('/login', function(req, res) {
     var state = generateRandomString(16);
     res.cookie(stateKey, state);
   
-    // your application requests authorization
     var scope = 'user-read-private user-read-email user-library-read';
     res.redirect('https://accounts.spotify.com/authorize?' +
       querystring.stringify({
@@ -115,9 +114,6 @@ app.get('/home', async (req, res)=>{
 
   res.redirect(`/?token=${access_token}`);
 
-  // Servir página html pra logar e mudar a main do react para exibir albums e etc
-  //Animação mostrando vários albums etc
-
 });
 
 
@@ -135,25 +131,24 @@ app.get('/getalbum', async (req, res) =>{
     json: true
   };
 
-  //Colocar try catch aqui
-  const response = await fetch(`https://api.spotify.com/v1/me/albums?offset=${offset}&limit=1`, options); 
+  
 
-  const data = await response.json();
+  try {
+    const response = await fetch(`https://api.spotify.com/v1/me/albums?offset=${offset}&limit=1`, options); 
 
-  const album = data.items[0].album;
+    const data = await response.json();
+  
+    const album = data.items[0].album;
 
-  res.status(200).json({"name": album.name, "artists": album.artists, "image": album.images[0].url, "external_url": album.external_urls});
+    res.status(200).json({"name": album.name, "artists": album.artists, "image": album.images[0].url, "external_url": album.external_urls});
+  } catch (e) {
+    res.status(500).json({'error': e});
+  }
+
 });
 
 
 app.get('/', (req, res)=>{
-    // const token = req.params.token || null;
-
-    // if (token) {
-      
-    // } else {
-    //   console.log('deu bo')
-    // }
     res.sendFile(path.join(__dirname+'/dist/index.html'));
 });
 
