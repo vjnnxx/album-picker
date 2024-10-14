@@ -142,6 +142,8 @@ app.get('/getalbum', async (req, res) =>{
   try {
     const response = await fetch(`https://api.spotify.com/v1/me/albums?offset=${offset}&limit=1`, options); 
 
+    console.log('resposta: ', response)
+
     const data = await response.json();
   
     const album = data.items[0].album;
