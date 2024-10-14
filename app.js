@@ -85,6 +85,7 @@ app.get('/callback', async (req, res)=>{
         res.redirect('/home');
 
       } else {
+        console.log('Erro no login', error)
         res.redirect('/#' +
           querystring.stringify({
             error: 'invalid_token'
@@ -116,7 +117,7 @@ app.get('/home', async (req, res)=>{
 
   } catch (error) {
     res.send(JSON.parse(JSON.stringify(error)));
-    console.log('Deu ruim')
+    console.log('Erro na home',error);
   }
 
 });
