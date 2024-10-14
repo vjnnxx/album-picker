@@ -19,7 +19,7 @@ app.use(express.static(__dirname + '/dist'));
 const port = 8888;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-const redirect_uri = '/callback';
+const redirect_uri = 'https://spotify-picker.onrender.com/callback/';
 
 
 const generateRandomString = (length) => {
