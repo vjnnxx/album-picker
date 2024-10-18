@@ -32,10 +32,6 @@ function App(){
 
     setLoading(true);
 
-    // const response = await fetch('/getalbum');
-    // const data = await response.json();
-    // setAlbum(data);
-
     fetch('/getalbum')
     .then(response => response.json())
     .then(data => {
@@ -78,9 +74,8 @@ function App(){
           <button onClick={fetchAlbum} className="sort">Escolher</button>
         </div>
       ) : (
-        <a href="/login"> <button className="login">Entrar com spotify</button> </a>
+        <a href="/login"> <button className="login">Entrar com Spotify</button> </a>
       )}
-      
     </div>
   )
 }
